@@ -1,0 +1,40 @@
+<div class="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-slate-800 border border-slate-700 p-6">
+        <h1 class="text-xl font-semibold mb-1">Login</h1>
+        <p class="text-sm text-slate-300 mb-6">Use your username and password</p>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+            <div>
+                <label class="text-sm text-slate-300">Username</label>
+                <input data-testid="username"
+                    class="mt-1 w-full rounded-xl bg-slate-900 border border-slate-700 px-3 py-2 outline-none focus:border-slate-500"
+                    formControlName="username" type="text" autocomplete="username" required />
+            </div>
+
+            <div>
+                <label class="text-sm text-slate-300">Password</label>
+                <input data-testid="password"
+                    class="mt-1 w-full rounded-xl bg-slate-900 border border-slate-700 px-3 py-2 outline-none focus:border-slate-500"
+                    formControlName="password" type="password" autocomplete="current-password" required />
+            </div>
+
+            @if (error()) {
+            <div class="text-sm text-red-300 bg-red-950/30 border border-red-900 rounded-xl p-3">
+                {{ error() }}
+            </div>
+            }
+
+            <button data-testid="login-btn"
+                class="w-full rounded-xl bg-sky-600 hover:bg-sky-500 transition px-4 py-2 font-medium disabled:opacity-60"
+                [disabled]="loading()" type="submit">
+                @if (loading()) { <span>Signing in…</span> } @else { <span>Login</span> }
+            </button>
+
+            <button type="button"
+                class="w-full rounded-xl bg-slate-700 hover:bg-slate-600 transition px-4 py-2 font-medium"
+                (click)="goSignup()">
+                Create account
+            </button>
+        </form>
+    </div>
+</div>

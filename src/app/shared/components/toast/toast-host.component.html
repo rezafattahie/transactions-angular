@@ -1,0 +1,10 @@
+<div class="fixed top-2 right-30 z-50 flex flex-col gap-2 text-center">
+    @for (t of service.toasts(); track t.id) {
+    <div class="min-w-[220px] max-w-[360px] rounded-xl border px-4 py-3 shadow-lg text-sm text-white" [class]="{
+        'bg-emerald-600/80' : t.type === 'success', 
+        'bg-red-600/80' : t.type === 'error' , 
+        'bg-sky-700/80' : t.type === 'info' }">
+        {{ t.message }}
+    </div>
+    }
+</div>

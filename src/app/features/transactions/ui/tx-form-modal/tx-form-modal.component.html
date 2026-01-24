@@ -1,0 +1,68 @@
+@if (open()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <button type="button" class="absolute inset-0 bg-black/60" (click)="close()" aria-label="Close"></button>
+
+    <div class="relative w-full max-w-lg rounded-2xl border border-slate-700 bg-slate-900 text-white shadow-xl">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-700">
+            <div class="text-base font-semibold">{{ title() }}</div>
+            <button type="button" class="text-sm text-slate-300 hover:text-white transition" (click)="close()">
+                ✕
+            </button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="p-5 space-y-4">
+            <div>
+                <label for="tx-amount" class="text-sm text-slate-300">Amount</label>
+                <input id="tx-amount" type="number" step="0.01" formControlName="amount"
+                    class="mt-1 w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-slate-500" />
+                @if (form.controls.amount.touched && form.controls.amount.invalid) {
+                <div class="mt-1 text-xs text-red-300">Amount must be greater than 0.</div>
+                }
+            </div>
+
+            <div>
+                <label for="tx-category" class="text-sm text-slate-300">Category</label>
+                <select id="tx-category" formControlName="category"
+                    class="mt-1 w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-slate-500">
+                    <option value="" disabled>Select a category</option>
+                    @for (c of store.categories(); track c.objectId) {
+                    <option [value]="c.objectId">{{ c.name }}</option>
+                    }
+                </select>
+                @if (form.controls.category.touched && form.controls.category.invalid) {
+                <div class="mt-1 text-xs text-red-300">Category is required.</div>
+                }
+            </div>
+
+            <div>
+                <label for="tx-desc" class="text-sm text-slate-300">Description</label>
+                <input id="tx-desc" type="text" formControlName="description"
+                    class="mt-1 w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-slate-500" />
+            </div>
+
+            <div>
+                <label for="tx-date" class="text-sm text-slate-300">Date</label>
+                <input id="tx-date" type="date" formControlName="entryDate"
+                    class="mt-1 w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 outline-none focus:border-slate-500" />
+                @if (form.controls.entryDate.touched && form.controls.entryDate.invalid) {
+                <div class="mt-1 text-xs text-red-300">Date is required.</div>
+                }
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" (click)="close()"
+                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition text-sm"
+                    [disabled]="store.saving()">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                    class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 transition text-sm disabled:opacity-60"
+                    [disabled]="store.saving()">
+                    @if (store.saving()) { <span>Saving…</span> } @else { <span>Save</span> }
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}

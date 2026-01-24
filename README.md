@@ -1,59 +1,138 @@
-# TransactionsAngular
+# Angular Transactions
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+A focused Angular repository showcasing a standalone **Transactions** feature (CRUD + pagination) with a minimal **Auth (Login/Signup)** flow.  
+Built to demonstrate clean architecture, RxJS-first async handling, testing, and production-ready project hygiene.
 
-## Development server
+---
 
-To start a local development server, run:
+## Demo
 
-```bash
-ng serve
+- Live demo: **TBD**
+- Test user: **demo / demo** (example)
+
+---
+
+## Features
+
+- **Auth**
+  - Signup (email + username + password)
+  - Login (username + password)
+  - Session stored locally
+  - Backendless table: `financeMembers`
+
+- **Transactions**
+  - List transactions with **Load more** pagination
+  - **Add / Edit / Remove**
+  - Category mapping (ID → name)
+  - Date formatting (German locale)
+  - Amount formatting with `€`
+
+- **UI**
+  - Header (no sidebar)
+  - Toast notifications (success/error/info)
+  - TailwindCSS styling
+
+- **Quality**
+  - Observable-first (RxJS end-to-end; no async/await in core flows)
+  - Unit tests + component tests (Vitest)
+  - Lightweight E2E tests (Playwright) with API mocking
+  - PWA-ready setup
+
+---
+
+## Tech Stack
+
+- **Angular** 19 (standalone components, signals)
+- **TypeScript**, **RxJS**
+- **TailwindCSS**
+- **Backendless REST API**
+- **Testing**
+  - Vitest (unit + component)
+  - Playwright (E2E)
+
+---
+
+## Project Structure
+
+```
+src/app
+  core/
+    api/                 # ApiService
+    auth/                # AuthService, guards, storage
+  features/
+    auth/                # login/signup pages + data-access repository
+    transactions/        # page + store + repositories + UI components
+  shared/
+    models/              # IBase + domain models
+    toast/               # ToastService + host component
+docs/
+  architecture.md
+  decisions.md
+  testing.md
+  release-checklist.md
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Install
 
 ```bash
-ng generate component component-name
+npm install
+npm start
+
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Testing
+
+### Unit + Component (Vitest)
+```bash
+npm test
+```
+
+Covered:
+- repositories (API calls)
+- store (pagination + CRUD + error paths)
+- key components (TxTable, TxFormModal, Login, Signup)
+
+### E2E (Playwright)
+```bash
+npm run e2e
+```
+
+E2E tests mock all network requests to avoid external dependencies.
+
+---
+
+## Scripts
+
+Common scripts:
 
 ```bash
-ng generate --help
+npm start
+npm test
+npm run e2e
+npm run build
 ```
 
-## Building
+---
 
-To build the project run:
+## Screenshots / GIFs
 
-```bash
-ng build
-```
+### Login
+![Login](docs/images/login.png)
+![Signup](docs/images/signup.png)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Modal
+![Modal](docs/images/modal.png)
 
-## Running unit tests
+### Transactions
+![Transactions](docs/images/transactions.png)
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+---
 
-```bash
-ng test
-```
+## Roadmap
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [ ] Netlify deployment + env vars
+- [ ] GitHub Actions CI (unit + e2e)
+- [ ] Minor accessibility pass
+- [ ] search/filter in transactions list

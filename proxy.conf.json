@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "target": "https://api.backendless.com/ED04C550-BD52-4725-B4B2-A6EA07C2BB58/3949C5B6-D203-4C3B-82F6-3CACBACE5474",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

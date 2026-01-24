@@ -1,0 +1,54 @@
+<div class="min-h-screen bg-slate-900 text-white">
+    <app-header title="Transactions"></app-header>
+
+    <main class="p-4 max-w-6xl mx-auto">
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <div class="flex gap-2">
+                <button type="button" (click)="setType('expense')" class="px-3 py-2 rounded-xl border transition"
+                    [class.border-sky-500]="store.type() === 'expense'" [class.bg-sky-950]="store.type() === 'expense'">
+                    Expense
+                </button>
+
+                <button type="button" (click)="setType('income')" class="px-3 py-2 rounded-xl border transition"
+                    [class.border-sky-500]="store.type() === 'income'" [class.bg-sky-950]="store.type() === 'income'">
+                    Income
+                </button>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="button" (click)="openAdd()"
+                    class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 transition text-sm">
+                    Add
+                </button>
+
+                <button type="button" (click)="store.refresh()"
+                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition text-sm">
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+
+        @if (store.error()) {
+        <div class="mb-4 text-sm text-red-300 bg-red-950/30 border border-red-900 rounded-xl p-3">
+            {{ store.error() }}
+        </div>
+        }
+        <app-tx-table [transactions]="store.transactions()" [categoryMap]="store.categoryMap()"
+            [loading]="store.loading()" (edit)="openEdit($event)"
+            (remove)="store.removeTransaction($event.objectId).subscribe()"></app-tx-table>
+
+        <div class="mt-3 flex items-center justify-center">
+            @if (store.hasMore()) {
+            <button type="button" (click)="loadMore()"
+                class="text-xs text-sky-400 hover:text-sky-300 transition disabled:opacity-60"
+                [disabled]="!store.canLoadMore()">
+                @if (store.loadingMore()) { <span>Loading…</span> } @else { <span>Load more</span> }
+            </button>
+            }
+        </div>
+    </main>
+</div>
+
+<app-tx-form-modal [open]="showForm()" [editing]="editing()" (closed)="closeForm()"
+    (saved)="closeForm()"></app-tx-form-modal>
