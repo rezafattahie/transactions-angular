@@ -8,7 +8,7 @@ Built to demonstrate clean architecture, RxJS-first async handling, testing, and
 ## Demo
 
 - Live demo: **TBD**
-- Test user: **demo / demo** (example)
+- Test user: **demo / demo123** (example)
 
 ---
 
