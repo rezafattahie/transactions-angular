@@ -133,6 +133,5 @@ npm run build
 ## Roadmap
 
 - [ ] Netlify deployment + env vars
-- [ ] GitHub Actions CI (unit + e2e)
 - [ ] Minor accessibility pass
 - [ ] search/filter in transactions list
