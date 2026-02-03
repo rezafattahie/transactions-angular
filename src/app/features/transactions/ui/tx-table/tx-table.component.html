@@ -3,7 +3,7 @@
         <tr>
             <th class="text-left px-4 py-3 font-medium">Date</th>
             <th class="text-left px-4 py-3 font-medium">Category</th>
-            <th class="text-left px-4 py-3 font-medium">Description</th>
+            <th class="text-left px-4 py-3 font-medium hidden md:block">Description</th>
             <th class="text-right px-4 py-3 font-medium">Amount</th>
             <th class="px-4 py-3"></th>
         </tr>
@@ -13,10 +13,12 @@
         @for (t of transactions(); track t.objectId) {
         <tr class="border-t border-slate-700 hover:bg-slate-700/30 transition">
             <td class="px-4 py-3 text-slate-300 whitespace-nowrap">
-                {{ t.entryDate | date:'EEEE, dd. MMMM yyyy':'':'de-DE' }}
+                <span class="hidden md:block"> {{ t.entryDate | date:'EEEE, dd. MMMM yyyy':'':'de-DE' }}</span>
+                <span class="md:hidden"> {{ t.entryDate | date:'EE dd. MMM':'':'de-DE' }}</span>
+
             </td>
             <td class="px-4 py-3">{{ categoryName(t.category) }}</td>
-            <td class="px-4 py-3 text-slate-300">{{ t.description || '—' }}</td>
+            <td class="px-4 py-3 text-slate-300 hidden md:block">{{ t.description || '—' }}</td>
             <td class="px-4 py-3 text-right font-semibold tabular-nums">
                 {{ t.amount | number:'1.2-2':'de-DE' }} €
             </td>
