@@ -17,7 +17,6 @@ export class TransactionsStore {
 
     private readonly pageSize = 15;
 
-    private typeSig = signal<TransactionType>('expense');
 
     private txSig = signal<ITransaction[]>([]);
     private catSig = signal<ICategory[]>([]);
@@ -30,9 +29,14 @@ export class TransactionsStore {
     private offsetSig = signal(0);
     private hasMoreSig = signal(true);
 
-    readonly type = this.typeSig.asReadonly();
     readonly transactions = this.txSig.asReadonly();
     readonly categories = this.catSig.asReadonly();
+    readonly filters = signal<{ type: 'income' | 'expense'; from?: string | null; to?: string | null; categoryId?: string | null }>({
+        type: 'expense',
+        from: null,
+        to: null,
+        categoryId: null,
+    });
 
     readonly loading = this.loadingSig.asReadonly();
     readonly loadingMore = this.loadingMoreSig.asReadonly();
@@ -48,9 +52,13 @@ export class TransactionsStore {
         for (const c of this.catSig()) map.set(c.objectId, c.name);
         return map;
     });
+    readonly effectiveType = computed<'expense' | 'income'>(() => {
+        const f = this.filters();
+        if (f.type === 'income') return 'income';
+        return 'expense';
+    });
 
     setType(type: TransactionType): void {
-        this.typeSig.set(type);
         this.loadCategories();
         this.refresh();
     }
@@ -66,6 +74,54 @@ export class TransactionsStore {
         this.loadTransactionsPage({ mode: 'replace', offset: 0 }).subscribe();
     }
 
+    setFilters(v: { type: 'income' | 'expense'; from?: string | null; to?: string | null; categoryId?: string | null }) {
+        const prev = this.filters();
+
+        const next = { ...v };
+
+        if (prev.type !== next.type) {
+            next.categoryId = null;
+        }
+
+        this.filters.set(next);
+        this.loadCategories();
+        this.loadInitial();
+    }
+
+    private toStartOfDayMs(dateStr: string): number {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        return new Date(y, m - 1, d, 0, 0, 0, 0).getTime();
+    }
+
+    private toEndOfDayMs(dateStr: string): number {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        return new Date(y, m - 1, d, 23, 59, 59, 999).getTime();
+    }
+
+    private buildWhereFromFilters(): string | undefined {
+        const f = this.filters();
+        const parts: string[] = [];
+
+
+        parts.push(`type='${f.type}'`);
+
+
+        if (f.from) {
+            parts.push(`entryDate >= ${this.toStartOfDayMs(f.from)}`);
+        }
+
+        if (f.to) {
+            parts.push(`entryDate <= ${this.toEndOfDayMs(f.to)}`);
+        }
+
+        if (f.categoryId) {
+            parts.push(`category='${f.categoryId}'`);
+        }
+
+        return parts.length ? parts.join(' AND ') : undefined;
+    }
+
+
     loadMore(): void {
         if (!this.canLoadMore()) return;
         const nextOffset = this.offsetSig() + this.pageSize;
@@ -78,7 +134,7 @@ export class TransactionsStore {
 
         return this.txRepo.createTransaction(input).pipe(
             tap((created) => {
-                if (created.type === this.typeSig()) this.txSig.set([created, ...this.txSig()]);
+                if (created.type === this.effectiveType()) this.txSig.set([created, ...this.txSig()]);
                 this.toast.success('Transaction added');
             }),
             finalize(() => this.savingSig.set(false)),
@@ -92,7 +148,7 @@ export class TransactionsStore {
 
         return this.txRepo.updateTransaction(objectId, patch).pipe(
             tap((updated) => {
-                const currentType = this.typeSig();
+                const currentType = this.effectiveType();
                 const prevList = this.txSig();
                 const idx = prevList.findIndex((t) => t.objectId === objectId);
                 if (idx === -1) return;
@@ -142,7 +198,7 @@ export class TransactionsStore {
         this.errorSig.set(null);
 
         this.catRepo
-            .getCategories({ type: this.typeSig() })
+            .getCategories({ type: this.effectiveType() })
             .pipe(finalize(() => this.loadingSig.set(false)))
             .subscribe({
                 next: (cats) => this.catSig.set(cats ?? []),
@@ -155,10 +211,14 @@ export class TransactionsStore {
 
         if (args.mode === 'replace') this.loadingSig.set(true);
         else this.loadingMoreSig.set(true);
+        const where = this.buildWhereFromFilters();
+
 
         return this.txRepo
             .getTransactions({
-                type: this.typeSig(),
+                type: this.effectiveType(),
+                where,
+                sortBy: 'entryDate desc',
                 pageSize: this.pageSize,
                 offset: args.offset,
             })

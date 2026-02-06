@@ -23,15 +23,16 @@ export class TransactionsRepository {
     getTransactions(params: {
         type: TransactionType;
         pageSize: number;
+        where?: string;
+        sortBy?: string
         offset: number;
     }): Observable<ITransaction[]> {
-        const where = `type='${params.type}'`;
 
         return this.api.get<ITransaction[]>('transactions', {
-            where,
+            where: params.where,
             pageSize: params.pageSize,
             offset: params.offset,
-            sortBy: 'entryDate desc',
+            sortBy: params.sortBy,
         });
     }
 

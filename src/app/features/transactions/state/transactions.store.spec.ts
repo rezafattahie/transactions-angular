@@ -162,4 +162,17 @@ describe('TransactionsStore', () => {
             });
     });
 
+    it('adds category filter to where clause', () => {
+        txRepo.getTransactions.mockReturnValue(of([] as any));
+
+        store.setFilters({ type: 'expense', categoryId: 'c1', from: null, to: null });
+
+        expect(txRepo.getTransactions).toHaveBeenCalledWith(
+            expect.objectContaining({
+                where: "type='expense' AND category='c1'",
+            })
+        );
+    });
+
+
 });

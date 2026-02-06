@@ -62,7 +62,7 @@ export class TxFormModalComponent {
         }
 
         const v = this.form.getRawValue() as FormValue;
-        const type = this.store.type();
+        const type = this.store.effectiveType();
 
         if (!this.editing()) {
             this.store

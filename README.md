@@ -23,6 +23,7 @@ Built to demonstrate clean architecture, RxJS-first async handling, testing, and
 - **Transactions**
   - List transactions with **Load more** pagination
   - **Add / Edit / Remove**
+  **Filters: type, date range, category**
   - Category mapping (ID → name)
   - Date formatting (German locale)
   - Amount formatting with `€`

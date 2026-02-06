@@ -5,11 +5,12 @@ import { TxFormModalComponent } from '../ui/tx-form-modal/tx-form-modal.componen
 import { TransactionsStore } from '../state/transactions.store';
 import { TransactionType } from '../../../shared/models/transaction-type';
 import { ITransaction } from '../../../shared/models/transaction.model';
+import { TxFilters } from '../ui/tx-filters/tx-filters';
 
 
 @Component({
     standalone: true,
-    imports: [HeaderComponent, TxTableComponent, TxFormModalComponent],
+    imports: [HeaderComponent, TxTableComponent, TxFormModalComponent, TxFilters],
     templateUrl: './transactions.page.html',
 })
 export class TransactionsPage implements OnInit {

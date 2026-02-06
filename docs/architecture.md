@@ -7,6 +7,7 @@ This repository is a focused, standalone extraction of a Transactions feature bu
 - `features/transactions`: transactions page, table, modal, store, repositories
 - `core`: cross-cutting concerns (auth, api)
 - `shared`: UI utilities (toast), models
+- `filtering`: server-side via Backendless where clause using timestamps for datetime range
 
 ## Data Flow
 UI -> Store -> Repository -> ApiService -> Backendless REST
