@@ -14,11 +14,11 @@ export const routes: Routes = [
     },
 
     {
-        path: 'transactions',
+        path: 'home',
         canActivate: [authGuard],
         loadComponent: () =>
             import('./features/transactions/pages/transactions.page').then((m) => m.TransactionsPage),
     },
 
-    { path: '**', redirectTo: 'transactions' },
+    { path: '**', redirectTo: 'home' },
 ];
